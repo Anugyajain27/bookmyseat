@@ -1,0 +1,22 @@
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<button id="rzp-button">Pay Now</button>
+<script>
+  var options = {
+      "key": "{{ razorpay_key }}",
+      "amount": "{{ payment.amount }}",
+      "currency": "INR",
+      "name": "Cineverse Tickets",
+      "description": "Movie Ticket Purchase",
+      "order_id": "{{ payment.id }}",
+      "handler": function (response){
+          // ✅ Success: send response.razorpay_payment_id to Django
+          window.location.href = "/payment/success/?payment_id=" + response.razorpay_payment_id + "&theater_id={{ theater_id }}";
+      },
+      "theme": { "color": "#3399cc" }
+  };
+  var rzp1 = new Razorpay(options);
+  document.getElementById('rzp-button').onclick = function(e){
+      rzp1.open();
+      e.preventDefault();
+  }
+</script>

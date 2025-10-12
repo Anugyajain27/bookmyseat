@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard | BookMySeat</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: #1c1c1c;
+      color: #ff4757;
+      padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 40px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      color: #ff4757;
+      margin: 10px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: #1c1c1c;
+      color: #fff;
+    }
+
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+<header>🎟️ Admin Dashboard - BookMySeat</header>
+
+<div class="container">
+  <div class="cards">
+    <div class="card">
+      <h2>₹{{ total_revenue|floatformat:2 }}</h2>
+      <p>Total Revenue</p>
+    </div>
+
+    <div class="card">
+      <h2>{{ total_users }}</h2>
+      <p>Total Users</p>
+    </div>
+
+    <div class="card">
+      <h2>{{ total_bookings }}</h2>
+      <p>Total Bookings</p>
+    </div>
+  </div>
+
+  <h3>🎬 Most Popular Movies</h3>
+  <table>
+    <tr>
+      <th>Movie</th>
+      <th>Total Bookings</th>
+    </tr>
+    {% for movie in popular_movies %}
+      <tr>
+        <td>{{ movie.name }}</td>
+        <td>{{ movie.total_bookings }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="2">No data available</td></tr>
+    {% endfor %}
+  </table>
+
+  <h3>🏟️ Busiest Theaters</h3>
+  <table>
+    <tr>
+      <th>Theater</th>
+      <th>Total Bookings</th>
+    </tr>
+    {% for theater in busiest_theaters %}
+      <tr>
+        <td>{{ theater.name }}</td>
+        <td>{{ theater.total_bookings }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="2">No data available</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+</body>
+</html>

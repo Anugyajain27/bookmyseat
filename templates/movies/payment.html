@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BookMySeat - Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            color: #2f3542;
+        }
+
+        /* ✅ Navbar */
+        .navbar {
+            background-color: #1c1c1c;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .navbar .logo img {
+            height: 32px;
+            margin-right: 10px;
+        }
+        .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+        .navbar .nav-links a:hover {
+            color: #ff4757;
+        }
+
+        /* ✅ Payment box */
+        .payment-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            margin: 80px auto;
+        }
+        .payment-container h2 {
+            color: #ff4757;
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+        .payment-details {
+            font-size: 16px;
+            color: #2f3542;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        .timer {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #ffa502;
+            font-weight: bold;
+            background: #fffbe6;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ffe58f;
+        }
+        .pay-btn {
+            background: #ff4757;
+            border: none;
+            padding: 14px 40px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        .pay-btn:hover {
+            background: #e84118;
+        }
+
+        /* ✅ Footer */
+        footer {
+            background: #1c1c1c;
+            color: #fff;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 30px 20px;
+            margin-top: 80px;
+        }
+        footer div {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+        }
+        footer h4 {
+            color: #ff4757;
+            margin-bottom: 10px;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+        footer a:hover {
+            color: #ff4757;
+        }
+        footer .social-icons i {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #fff;
+            cursor: pointer;
+        }
+        footer .social-icons i:hover {
+            color: #ff4757;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="logo">
+            BookMySeat
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'movie_list' %}">Home</a>
+            <a href="{% url 'movie_list' %}">Movies</a>
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <!-- ✅ Payment Box -->
+    <div class="payment-container">
+        <h2>Complete Your Payment</h2>
+
+        <!-- Countdown Timer -->
+        <div class="timer">
+            ⏰ Time left to complete payment: <span id="countdown">05:00</span>
+        </div>
+
+        <div class="payment-details">
+            <p>🎬 <strong>{{ request.user.username }}</strong>, you're booking tickets for:</p>
+            <p><strong>Movie:</strong> {{ theater.movie.name }}</p>
+            <p><strong>Theater:</strong> {{ theater.name }}</p>
+            <p><strong>Amount:</strong> ₹{{ payment.amount|floatformat:2 }}</p>
+        </div>
+
+        <button id="rzp-button1" class="pay-btn">Pay Now</button>
+    </div>
+
+    <!-- ✅ Footer -->
+    <footer>
+        <div>
+            <h4>About Us</h4>
+            <p>We provide the best movie experience in town. Book your tickets now and enjoy the show!</p>
+        </div>
+        <div>
+            <h4>Quick Links</h4>
+            <a href="{% url 'movie_list' %}">Home</a>
+            <a href="{% url 'movie_list' %}">Movies</a>
+            <a href="{% url 'profile' %}">Book Tickets</a>
+            <a href="#">Contact</a>
+        </div>
+        <div>
+            <h4>Follow Us</h4>
+            <div class="social-icons">
+                <i>🌐</i> <i>🐦</i> <i>📸</i>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Razorpay Options
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ payment.amount }}",
+            "currency": "INR",
+            "name": "BookMySeat",
+            "description": "Movie Ticket Booking",
+            "order_id": "{{ payment.id }}",
+            "callback_url": "{% url 'payment_success' %}?theater_id={{ theater_id }}",
+            "prefill": {
+                "name": "{{ request.user.username }}",
+                "email": "{{ request.user.email }}"
+            },
+            "theme": {
+                "color": "#ff4757"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        document.getElementById('rzp-button1').onclick = function(e){
+            rzp1.open();
+            e.preventDefault();
+        }
+
+        // 5-minute Countdown Timer
+        let timeLeft = 5 * 60;
+        const timerDisplay = document.getElementById('countdown');
+
+        const timer = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent =
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                alert("⏰ Time's up! Your seat reservation has expired.");
+                window.location.href = "{% url 'theater_list' theater.movie.id %}";
+            }
+            timeLeft--;
+        }, 1000);
+    </script>
+</body>
+</html>
