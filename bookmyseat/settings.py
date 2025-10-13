@@ -59,8 +59,9 @@ LOGIN_URL = '/login/'
 STRIPE_PUBLIC_KEY = "pk_test_..."
 STRIPE_SECRET_KEY = "sk_test_..."
 
-RAZORPAY_KEY_ID = "rzp_test_RP1MnNuNXrU3sg"       # from Razorpay Dashboard
-RAZORPAY_KEY_SECRET = "Et4sCLhngigRQrbVM7EBNNrG"      # from Razorpay Dashboard
+# Razorpay Dashboard
+RAZORPAY_KEY_ID = "rzp_test_RP1MnNuNXrU3sg"
+RAZORPAY_KEY_SECRET = "Et4sCLhngigRQrbVM7EBNNrG"
 
 TEMPLATES = [
     {
@@ -88,7 +89,7 @@ DATABASES = {
     }
 }
 
-# 🔴 Removed the dj_database_url / Postgres override
+# Removed the dj_database_url / Postgres override
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

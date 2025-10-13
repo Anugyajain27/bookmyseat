@@ -14,8 +14,7 @@ from django.contrib.auth.models import User
 
 @staff_member_required
 def admin_dashboard(request):
-    # Temporarily skip revenue calculation
-    total_revenue = 0  # You can update this later if you add ticket pricing
+    total_revenue = 0
 
     # Most popular movies
     popular_movies = (
@@ -189,14 +188,14 @@ def payment_success(request):
         message = f"""
         Hello {request.user.username},
 
-        Your booking is confirmed! ✅
+        Your booking is confirmed!
 
         🎬 Movie: {theater.movie.name}
         📍 Theater: {theater.name}
         🪑 Seats: {', '.join(booked_seats)}
         📅 Show Time: {theater.time.strftime('%d %B %Y, %I:%M %p')}
 
-        Thank you for booking with BookMyShow Clone!
+        Thank you for booking with BookMySeat !
         Enjoy your movie 🍿
         """
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [request.user.email])
